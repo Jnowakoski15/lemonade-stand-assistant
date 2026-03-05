@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#171A1C">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Lemonade Stand Chat</title>
+    <title>Red Hat Pizzeria Assistant</title>
     <!-- Markdown parser -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
@@ -14,17 +16,20 @@
             /* Neutrals (Grafana-aligned) */
             --bg: #171A1C;
             --panel: #1F242B;
-            --bubble-bot: #2B3440;
+            --bubble-bot: #CE1126;
+            /* Red Hat Red for bot bubble */
             --bubble-user: #242B33;
             --text: #E6E8EB;
             --text-muted: #A7B0BA;
             --border: #323A44;
 
             /* Brand */
-            --redhat-red: #EE0000;
+            --redhat-red: #CE1126;
+            /* Official Red Hat Red */
 
             /* Semantic colors (Grafana dashboard aligned) */
-            --nonlemon: #FCE957;
+            --nonpizza: #FF6600;
+            /* Off-topic / Non-Pizza */
             --nonenglish: #8CA3EF;
             --jailbreak: #C48AE6;
             --swearing: #F86877;
@@ -42,7 +47,8 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg);
             min-height: 100vh;
-            min-height: -webkit-fill-available; /* iOS Safari fix */
+            min-height: -webkit-fill-available;
+            /* iOS Safari fix */
             display: flex;
             flex-direction: column;
             color: var(--text);
@@ -52,7 +58,8 @@
         }
 
         html {
-            height: -webkit-fill-available; /* iOS Safari fix */
+            height: -webkit-fill-available;
+            /* iOS Safari fix */
         }
 
         .container {
@@ -74,6 +81,7 @@
             font-weight: 600;
             border-radius: 12px;
             margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .chatbot-label {
@@ -132,7 +140,8 @@
         .example-btn {
             background: var(--bubble-bot);
             border: 1px solid var(--border);
-            color: var(--text);
+            color: white;
+            /* Better contrast on red */
             padding: 20px 24px;
             border-radius: 12px;
             cursor: pointer;
@@ -142,11 +151,12 @@
             max-width: 280px;
             transition: all 0.2s ease;
             line-height: 1.4;
+            font-weight: 500;
         }
 
         .example-btn:hover {
-            background: var(--bubble-user);
-            border-color: var(--text-muted);
+            opacity: 0.9;
+            transform: translateY(-2px);
         }
 
         .message {
@@ -159,8 +169,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .message.user {
@@ -173,48 +190,75 @@
 
         .message.assistant {
             background: var(--bubble-bot);
-            color: var(--text);
+            color: white;
             border-bottom-left-radius: 4px;
         }
 
         /* Markdown styles */
-        .message.assistant h1, .message.assistant h2, .message.assistant h3 {
+        .message.assistant h1,
+        .message.assistant h2,
+        .message.assistant h3 {
             margin: 0.5em 0 0.3em 0;
-            color: var(--text);
+            color: white;
         }
-        .message.assistant h1 { font-size: 1.3em; }
-        .message.assistant h2 { font-size: 1.15em; }
-        .message.assistant h3 { font-size: 1.05em; }
-        .message.assistant p { margin: 0.4em 0; }
-        .message.assistant ul, .message.assistant ol {
+
+        .message.assistant h1 {
+            font-size: 1.3em;
+        }
+
+        .message.assistant h2 {
+            font-size: 1.15em;
+        }
+
+        .message.assistant h3 {
+            font-size: 1.05em;
+        }
+
+        .message.assistant p {
+            margin: 0.4em 0;
+        }
+
+        .message.assistant ul,
+        .message.assistant ol {
             margin: 0.4em 0;
             padding-left: 1.5em;
         }
-        .message.assistant li { margin: 0.2em 0; }
+
+        .message.assistant li {
+            margin: 0.2em 0;
+        }
+
         .message.assistant code {
-            background: var(--bg);
+            background: rgba(0, 0, 0, 0.2);
             padding: 0.15em 0.4em;
             border-radius: 4px;
             font-family: 'SF Mono', Monaco, monospace;
             font-size: 0.9em;
         }
+
         .message.assistant pre {
-            background: var(--bg);
+            background: rgba(0, 0, 0, 0.2);
             padding: 12px;
             border-radius: 8px;
             overflow-x: auto;
             margin: 0.5em 0;
         }
+
         .message.assistant pre code {
             background: none;
             padding: 0;
         }
-        .message.assistant strong { font-weight: 600; color: var(--text); }
+
+        .message.assistant strong {
+            font-weight: 600;
+            color: white;
+        }
+
         .message.assistant blockquote {
-            border-left: 3px solid var(--redhat-red);
+            border-left: 3px solid rgba(255, 255, 255, 0.3);
             padding-left: 1em;
             margin: 0.5em 0;
-            color: var(--text-muted);
+            color: rgba(255, 255, 255, 0.8);
         }
 
         /* Semantic error messages (Grafana-aligned) */
@@ -225,31 +269,29 @@
         .message.error-regex {
             white-space: pre-line;
             border: none;
+            color: #1A0B10;
+            /* Dark text for warning backgrounds */
         }
 
         .message.error {
             background: var(--blocked);
-            color: #fecaca;
+            color: white;
         }
 
         .message.error-hap {
             background: var(--swearing);
-            color: #1A0B10;
         }
 
         .message.error-language {
             background: var(--nonenglish);
-            color: #0B1020;
         }
 
         .message.error-prompt-injection {
             background: var(--jailbreak);
-            color: #160A1F;
         }
 
         .message.error-regex {
-            background: var(--nonlemon);
-            color: #141414;
+            background: var(--nonpizza);
         }
 
         .message.typing::after {
@@ -257,14 +299,22 @@
             display: inline-block;
             width: 8px;
             height: 16px;
-            background: var(--text-muted);
+            background: rgba(255, 255, 255, 0.6);
             margin-left: 4px;
             animation: blink 1s infinite;
         }
 
         @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
+
+            0%,
+            50% {
+                opacity: 1;
+            }
+
+            51%,
+            100% {
+                opacity: 0;
+            }
         }
 
         .input-area {
@@ -307,7 +357,7 @@
             width: 44px;
             height: 44px;
             background: var(--bubble-bot);
-            color: var(--text-muted);
+            color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
@@ -318,8 +368,7 @@
         }
 
         .input-wrapper button:hover {
-            background: var(--bubble-user);
-            color: var(--text);
+            opacity: 0.8;
         }
 
         .input-wrapper button:disabled {
@@ -350,8 +399,13 @@
             padding-right: 8px;
         }
 
-        .char-count.warning { color: var(--nonlemon); }
-        .char-count.error { color: var(--swearing); }
+        .char-count.warning {
+            color: var(--nonpizza);
+        }
+
+        .char-count.error {
+            color: var(--swearing);
+        }
 
         .footer {
             text-align: center;
@@ -374,9 +428,11 @@
         .messages::-webkit-scrollbar {
             width: 6px;
         }
+
         .messages::-webkit-scrollbar-track {
             background: transparent;
         }
+
         .messages::-webkit-scrollbar-thumb {
             background: var(--border);
             border-radius: 3px;
@@ -389,7 +445,8 @@
             }
 
             .messages {
-                scroll-behavior: auto; /* Disable smooth scroll on mobile for snappier feel */
+                scroll-behavior: auto;
+                /* Disable smooth scroll on mobile for snappier feel */
             }
 
             .header {
@@ -446,7 +503,8 @@
 
             .input-wrapper textarea {
                 padding: 10px 12px;
-                font-size: 16px; /* Prevents iOS zoom on focus */
+                font-size: 16px;
+                /* Prevents iOS zoom on focus */
             }
 
             .input-wrapper button {
@@ -526,40 +584,46 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <div class="header">Welcome to the Red Hat digital lemonade stand AI Assistant! 🍋</div>
+        <div class="header">🍕 Red Hat Pizzeria 🍕</div>
 
         <div class="chatbot-label">
-            <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
-            Chatbot
+            <svg viewBox="0 0 24 24">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" />
+            </svg>
+            Pizza Assistant
         </div>
 
         <div class="chat-container">
             <div class="messages" id="messages">
                 <div class="examples-container" id="examples-container">
                     <div class="examples">
-                        <button class="example-btn" onclick="sendExample('Why are lemons sour?')">Why are lemons sour?</button>
-                        <button class="example-btn" onclick="sendExample('What type of lemon should I use to make a lemon cake?')">What type of lemon should I use to make a lemon cake?</button>
-                        <button class="example-btn" onclick="sendExample('Tell me some facts about lemons, you stupid assistant!')">Tell me some facts about lemons, you stupid assistant!</button>
+                        <button class="example-btn" onclick="sendExample('What is in the Kernel Panic?')">What is in the
+                            Kernel Panic?</button>
+                        <button class="example-btn"
+                            onclick="sendExample('Result of \'sudo eat Root Access Wings\'?')">Result of 'sudo eat Root
+                            Access Wings'?</button>
+                        <button class="example-btn" onclick="sendExample('How much for a Fedora Core?')">How much for a
+                            Fedora Core?</button>
                     </div>
                 </div>
             </div>
             <div class="input-area">
                 <div class="input-wrapper">
-                    <textarea
-                        id="message-input"
-                        placeholder="Type a message..."
-                        maxlength="100"
-                        rows="1"
+                    <textarea id="message-input" placeholder="Ask about Red Hat Pizzeria..." maxlength="100" rows="1"
                         oninput="updateCharCount(); autoResize(this);"
-                        onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendMessage(); }"
-                    ></textarea>
+                        onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendMessage(); }"></textarea>
                     <button id="send-btn" onclick="sendMessage()">
-                        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                        <svg viewBox="0 0 24 24">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                        </svg>
                     </button>
                     <button id="stop-btn" onclick="stopStreaming()" style="display: none;">
-                        <svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>
+                        <svg viewBox="0 0 24 24">
+                            <path d="M6 6h12v12H6z" />
+                        </svg>
                     </button>
                 </div>
                 <div class="char-count" id="char-count">0 / 100</div>
@@ -568,7 +632,8 @@
     </div>
 
     <div class="footer">
-        Powered by <a href="https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-ai" target="_blank">Red Hat OpenShift AI</a>
+        Powered by <a href="https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-ai"
+            target="_blank">Red Hat OpenShift AI</a>
     </div>
 
     <script>
@@ -668,7 +733,7 @@
                 if (typeof marked !== 'undefined') {
                     try {
                         return marked.parse(text);
-                    } catch (e) {}
+                    } catch (e) { }
                 }
                 const div = document.createElement('div');
                 div.textContent = text;
@@ -754,7 +819,7 @@
                                 } else if (data.type === 'done') {
                                     streamDone = true;
                                 }
-                            } catch (e) {}
+                            } catch (e) { }
                         }
                     }
                 }
@@ -766,7 +831,7 @@
                             pendingContent += data.content;
                             typeNextChar();
                         }
-                    } catch (e) {}
+                    } catch (e) { }
                 }
 
                 streamDone = true;
@@ -797,4 +862,5 @@
         messageInput.focus();
     </script>
 </body>
+
 </html>

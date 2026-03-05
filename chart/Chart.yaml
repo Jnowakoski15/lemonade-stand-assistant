@@ -1,8 +1,8 @@
 apiVersion: v2
-name: lemonade-stand-assistant
-description: A Helm chart for Lemonade Stand Assistant Application
+name: lemonade-stand-app
+description: Red Hat Pizza Assistant for ordering pizza and checking the menu
 type: application
-version: 1.0.0
+version: 0.1.0
 appVersion: "1.0.0"
 maintainers:
   - name: sarabanderby

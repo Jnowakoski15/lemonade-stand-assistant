@@ -225,7 +225,7 @@ spec:
     matchLabels:
       dashboards: "grafana"
   resyncPeriod: 5m
-  title: Lemonade Stand Dashboards
+  title: Red Hat Pizza Dashboards
 
 ---
 apiVersion: grafana.integreatly.org/v1beta1
@@ -242,7 +242,7 @@ metadata:
     dashboards: grafana
 spec:
   allowCrossNamespaceImport: false
-  folder: Lemonade Stand Dashboards
+  folder: Red Hat Pizza Dashboards
   instanceSelector:
     matchLabels:
       dashboards: grafana
@@ -358,12 +358,12 @@ spec:
                 "properties": [
                   {
                     "id": "displayName",
-                    "value": "🍏Non Lemon"
+                    "value": "🍕Non-Pizza"
                   },
                   {
                     "id": "color",
                     "value": {
-                      "fixedColor": "#FFEE52",
+                      "fixedColor": "#FF6600",
                       "mode": "fixed"
                     }
                   }

@@ -1,7 +1,7 @@
 FROM python:3.11-slim
 
-LABEL maintainer="ckavili@redhat.com"
-LABEL description="FastAPI chat application for lemonade stand demo"
+LABEL maintainer="jnowakos@redhat.com"
+LABEL description="FastAPI chat application for pizza parlor"
 LABEL version="2.0"
 
 # Set environment variables

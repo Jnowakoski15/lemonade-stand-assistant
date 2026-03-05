@@ -1,5 +1,5 @@
 # Enable/disable the grafana operator installation
-operator: true
+operator: false
 
 # Grafana configuration
 grafana:
