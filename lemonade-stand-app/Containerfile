@@ -7,6 +7,12 @@ LABEL version="2.0"
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+ENV HOME=/application
+ENV HF_HOME=/application/.cache
+ENV XDG_CACHE_HOME=/application/.cache
+ENV XDG_CONFIG_HOME=/application/.cache
+ENV CHROMA_CACHE_DIR=/application/.cache
+ENV TRANSFORMERS_CACHE=/application/.cache
 
 # Create non-root user for OpenShift compatibility
 RUN useradd -m -u 1001 appuser
@@ -19,8 +25,9 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY app_fastapi.py .
+COPY app_fastapiv2.py .
 COPY static/ ./static/
+COPY rag_docs/ ./rag_docs/
 
 # Create cache directory with proper permissions
 RUN mkdir -p /application/.cache && \
@@ -38,4 +45,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')" || exit 1
 
 # Run with uvicorn - single worker for async, high concurrency
-CMD ["python", "-m", "uvicorn", "app_fastapi:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["python", "-m", "uvicorn", "app_fastapiv2:app", "--host", "0.0.0.0", "--port", "8080"]

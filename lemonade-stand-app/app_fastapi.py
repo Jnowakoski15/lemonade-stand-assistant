@@ -232,7 +232,7 @@ async def lifespan(app: FastAPI):
             limit=200,
             limit_per_host=100,
             ssl=ssl_context,
-            keepalive_timeout=30,  # Longer keepalive - internal services are stable
+            keepalive_timeout=5,  # Longer keepalive - internal services are stable
             enable_cleanup_closed=True,
         )
         logger.info("Using HTTPS with connection pooling (internal service mode)")
@@ -338,7 +338,7 @@ async def process_chat(message: str) -> AsyncGenerator[dict, None]:
             {"role": "user", "content": message}
         ],
         "stream": True,
-        "max_tokens": 200,
+        "max_tokens": 400,
         "temperature": 0,
         "detectors": {
             "input": {
@@ -350,8 +350,7 @@ async def process_chat(message: str) -> AsyncGenerator[dict, None]:
                 "hap": {},
                 "regex_competitor": {
                     "regex": ALL_REGEX_PATTERNS
-                },
-                "language_detection": {}
+                }
             }
         }
     }
@@ -449,6 +448,7 @@ async def process_chat(message: str) -> AsyncGenerator[dict, None]:
         try:
             logger.debug(f"Sending request to orchestrator (attempt {attempt + 1}/{max_retries + 1})")
             async with aiohttp_session.post(API_URL, json=payload, headers=headers) as response:
+                logger.debug(f"Response Headers: {dict(response.headers)}")
                 logger.debug(f"Orchestrator response status: {response.status}")
                 if response.status != 200:
                     error_text = await response.text()
@@ -515,6 +515,12 @@ async def process_chat(message: str) -> AsyncGenerator[dict, None]:
 
                     yield {"type": "done"}
                     return
+
+                logger.warning(
+                    f"Empty stream from Orchestrator: Status {response.status}, "
+                    f"Bytes received: {total_bytes}, Chunks parsed: {chunk_count}, "
+                    f"Attempt: {attempt + 1}"
+                )
 
                 # Empty response - likely stale connection, retry immediately
                 if attempt < max_retries:
