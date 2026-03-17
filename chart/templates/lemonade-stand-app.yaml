@@ -44,7 +44,7 @@ spec:
     spec:
       containers:
         - name: lemonade-stand
-          image: quay.io/jnowakos/redhat-pizza:0.1
+          image: quay.io/jnowakos/redhat-pizza:0.4.6
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

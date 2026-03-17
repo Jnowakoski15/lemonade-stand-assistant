@@ -329,7 +329,7 @@
                                         hasStarted = true;
                                     }
                                     fullContent += data.content;
-                                    assistantDiv.innerHTML = typeof marked !== 'undefined' ? marked.parse(fullContent) : fullContent;
+                                    assistantDiv.innerHTML = typeof marked !== 'undefined' ? marked.parse(fullContent, { breaks: true }) : fullContent;
                                     scrollToBottom();
                                 } else if (data.type === 'error') {
                                     if (!hasStarted) assistantDiv.innerHTML = '';

@@ -439,7 +439,8 @@ async def process_chat(message: str) -> AsyncGenerator[dict, None]:
         "temperature": 0,
         "detectors": {
             "input": {"hap": {}, "language_detection": {}, "prompt_injection": {}},
-            "output": {"hap": {}, "regex_competitor": {"regex": ALL_REGEX_PATTERNS}}
+            "output": {}
+           # "output": {"hap": {}, "regex_competitor": {"regex": ALL_REGEX_PATTERNS}}
         }
     }
 
@@ -492,7 +493,6 @@ async def process_chat(message: str) -> AsyncGenerator[dict, None]:
 
                             full_response += content
                             yield {"type": "chunk", "content": content}
-                            yield {"type": "chunk", "content": "\n"}
 
                     except Exception as e:
                         logger.error(f"Error parsing SSE chunk: {repr(e)}")
@@ -506,10 +506,25 @@ async def process_chat(message: str) -> AsyncGenerator[dict, None]:
                 else:
                     logger.warning("Empty stream received. Connection may be stale.")
 
-        except (httpx.RequestError, httpx.TimeoutException) as e:
-            logger.warning(f"Connection issue on attempt {attempt + 1}: {str(e)}")
+                    if attempt < max_retries:
+                        await asyncio.sleep(2.0) # Wait 2 seconds before retrying
+                        continue
+                    else:
+                        yield {"type": "error", "message": "The server returned an empty response."}
+                        return
+
+        except httpx.TimeoutException as e:
+            # If the LLM times out, the GPU is overloaded. Do NOT retry. 
+            logger.warning(f"Timeout on attempt {attempt + 1}: {str(e)}")
+            yield {"type": "error", "message": "The pizza oven is a bit backed up right now! The server took too long to respond. Please try again in a minute."}
+            return
+            
+        except httpx.RequestError as e:
+            # Only retry on actual network disconnects/drops
+            logger.warning(f"Network issue on attempt {attempt + 1}: {str(e)}")
             if attempt < max_retries:
-                await asyncio.sleep(0.5)
+                # Use exponential backoff (2s, 4s, 8s...) instead of slamming the server
+                await asyncio.sleep(2.0 ** attempt) 
                 continue
             
             yield {"type": "error", "message": f"Connection error: {str(e)}"}
@@ -635,7 +650,7 @@ async def root():
                                 if (data.type === 'chunk') {
                                     if (!hasStarted) { assistantDiv.innerHTML = ''; hasStarted = true; }
                                     fullContent += data.content;
-                                    assistantDiv.innerHTML = typeof marked !== 'undefined' ? marked.parse(fullContent) : fullContent;
+                                    assistantDiv.innerHTML = typeof marked !== 'undefined' ? marked.parse(fullContent, { breaks: true }) : fullContent;
                                     scrollToBottom();
                                 } else if (data.type === 'error') {
                                     if (!hasStarted) assistantDiv.innerHTML = '';
